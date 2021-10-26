@@ -1,0 +1,33 @@
+export declare class ConnScheduler {
+    private readonly ssb;
+    private readonly config;
+    private pubDiscoveryPausable?;
+    private intervalForUpdate?;
+    private ssbDB2Subscription?;
+    private closed;
+    private loadedSocialGraph;
+    private lastMessageAt;
+    private hasScheduledAnUpdate;
+    private socialGraph;
+    private pinnedAddresses;
+    constructor(ssb: any, config: any);
+    private loadSocialGraph;
+    private isCurrentlyDownloading;
+    private weBlockThem;
+    private weFollowThem;
+    private maxWaitToConnect;
+    private updateTheseConnections;
+    private updateStagingNow;
+    private updateHubNow;
+    private updateNow;
+    private updateSoon;
+    private removeDefunct;
+    private populateWithSeeds;
+    private setupPubDiscovery;
+    private setupBluetoothDiscovery;
+    private setupLanDiscovery;
+    pin: (address: string) => void;
+    unpin: (address: string) => void;
+    start: () => void;
+    stop: () => void;
+}

@@ -27,10 +27,18 @@ function hasNetworkDebounced() {
   return lastValue;
 }
 
+function isLocalhost(p: Peer) {
+  const isLocal = ip.isLoopback(p[1].host) || p[1].host == 'localhost'
+  if (p[0].startsWith('ws')) {
+    debug('islocal=%o %O', isLocal, p);
+  }
+  return isLocal;
+}
+
 //detect if not connected to wifi or other network
 //(i.e. if there is only localhost)
 function isOffline(p: Peer) {
-  if (ip.isLoopback(p[1].host) || p[1].host == 'localhost') return false;
+  if (isLocalhost(p)) return false;
   else return !hasNetworkDebounced();
 }
 
@@ -61,6 +69,7 @@ function take(n: number) {
 
 type Type =
   | 'bt'
+  | 'device' // aka localhost
   | 'lan'
   | 'internet'
   | 'dht'
@@ -71,6 +80,9 @@ type Type =
 
 function detectType(peer: Peer): Type {
   const [addr, data] = peer;
+  // NOTE: does not work for ws:// because ssb-conn-hub
+  // doesn't parse ws addresses
+  if (isLocalhost(peer)) return 'device';
   if (data.type === 'bt') return 'bt';
   if (data.type === 'lan') return 'lan';
   if (data.type === 'internet') return 'internet';
@@ -132,6 +144,7 @@ export class ConnScheduler {
   private lastMessageAt: number;
   private hasScheduledAnUpdate: boolean;
   private socialGraph: Record<FeedId, number>;
+  private pinnedAddresses: Set<string>;
 
   constructor(ssb: any, config: any) {
     this.ssb = ssb;
@@ -141,6 +154,7 @@ export class ConnScheduler {
     this.hasScheduledAnUpdate = false;
     this.loadedSocialGraph = false;
     this.socialGraph = {};
+    this.pinnedAddresses = new Set();
   }
 
   private loadSocialGraph() {
@@ -199,7 +213,9 @@ export class ConnScheduler {
   // opts: { quota, backoffStep, backoffMax, groupMin }
   private updateTheseConnections(test: (p: Peer) => boolean, opts: any) {
     const query = this.ssb.conn.query();
-    const peersUp = query.peersInConnection().filter(test);
+    const peersUp = query.peersInConnection().filter(test).filter( (p: Peer)=>{
+      !this.pinnedAddresses.has(p[0])
+    })
     const peersDown = query.peersConnectable('db').filter(test);
     const {quota, backoffStep, backoffMax, groupMin} = opts;
     const excess = peersUp.length > quota * 2 ? peersUp.length - quota : 0;
@@ -526,6 +542,21 @@ export class ConnScheduler {
 
     this.ssb.lan.start();
   }
+
+  // NOTE: we dont want to make this available via RPC, but we have to!
+  // (otherwise it won't be exported at all)
+  // This is a limitation of secret-stack-decorators and there's no easy way around it.
+  // DANGER: Because of the above, this is an attack vector (denial of service)
+  @muxrpc('sync')
+  public pin = (address: string) => {
+    debug('pinned address: %s', address)
+    this.pinnedAddresses.add(address)
+  };
+
+  @muxrpc('sync')
+  public unpin = (address: string) => {
+    this.pinnedAddresses.delete(address)
+  };
 
   @muxrpc('sync')
   public start = () => {

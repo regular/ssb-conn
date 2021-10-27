@@ -1,4 +1,5 @@
 import ConnQuery = require('ssb-conn-query');
+import {plugin, muxrpc, local} from 'secret-stack-decorators';
 import {AddressData as DBData} from 'ssb-conn-db/lib/types';
 import {ListenEvent as HubEvent} from 'ssb-conn-hub/lib/types';
 import {StagedData} from 'ssb-conn-staging/lib/types';
@@ -532,19 +533,16 @@ export class ConnScheduler {
     this.ssb.lan.start();
   }
 
-  // NOTE: we dont want to make this available via RPC, but we have to!
-  // (otherwise it won't be exported at all)
-  // This is a limitation of secret-stack-decorators and there's no easy way around it.
-  // DANGER: Because of the above, this is an attack vector (denial of service)
-  @muxrpc('sync')
+  @local()
   public pin = (address: string) => {
-    debug('pinned address: %s', address)
     this.pinnedAddresses.add(address)
+    debug('pinned address: %s', address)
   };
 
-  @muxrpc('sync')
+  @local()
   public unpin = (address: string) => {
     this.pinnedAddresses.delete(address)
+    debug('unpinned address: %s', address)
   };
 
   @muxrpc('sync')

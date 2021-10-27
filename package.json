@@ -26,6 +26,7 @@
     "ssb-conn-staging": "~0.1.0",
     "ssb-ref": "^2.13.9",
     "ssb-typescript": "^1.5.0",
+    "secret-stack-decorators": "git+ssh://gitlab.com/regular1/secret-stack-decorators",
     "statistics": "^3.3.0",
     "zii": "~1.1.0"
   },

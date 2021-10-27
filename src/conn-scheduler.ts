@@ -6,7 +6,6 @@ import {StagedData} from 'ssb-conn-staging/lib/types';
 import {Peer} from 'ssb-conn-query/lib/types';
 import {Discovery as LANDiscovery} from 'ssb-lan/lib/types';
 import {Msg, FeedId} from 'ssb-typescript';
-import {plugin, muxrpc} from 'secret-stack-decorators';
 import {CONN} from './conn';
 import {Config} from './types';
 const pull = require('pull-stream');

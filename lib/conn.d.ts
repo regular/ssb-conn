@@ -1,0 +1,44 @@
+import ConnDB = require('ssb-conn-db');
+import ConnHub = require('ssb-conn-hub');
+import ConnStaging = require('ssb-conn-staging');
+import ConnQuery = require('ssb-conn-query');
+import { AddressData } from 'ssb-conn-db/lib/types';
+import { Callback } from './types';
+export declare class CONN {
+    private readonly ssb;
+    private readonly config;
+    private readonly _db;
+    private readonly _hub;
+    private readonly _staging;
+    private readonly _query;
+    constructor(ssb: any, cfg: any);
+    private initialize;
+    private setupCloseHook;
+    private maybeAutoStartScheduler;
+    private startScheduler;
+    private stopScheduler;
+    remember: (address: string, data?: any) => void;
+    forget: (address: string) => void;
+    dbPeers: () => Iterable<[string, AddressData]>;
+    connect: (address: string, b?: Record<string, any> | Callback<any> | null | undefined, c?: Callback<any> | undefined) => void;
+    disconnect: (address: string, cb?: Callback<any> | undefined) => void;
+    peers: () => any;
+    stage: (address: string, data?: Partial<Readonly<{
+        [misc: string]: any;
+        key?: string | undefined;
+        stagingBirth: number;
+        stagingUpdated: number;
+    }>>) => boolean;
+    unstage: (address: string) => boolean;
+    stagedPeers: () => any;
+    start: () => Promise<void>;
+    stop: () => void;
+    ping: () => any;
+    db: () => ConnDB;
+    hub: () => ConnHub;
+    staging: () => ConnStaging;
+    query: () => ConnQuery;
+    internalConnDB: () => ConnDB;
+    internalConnHub: () => ConnHub;
+    internalConnStaging: () => ConnStaging;
+}

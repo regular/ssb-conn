@@ -19,7 +19,7 @@
     "pull-pause": "~0.0.2",
     "pull-ping": "^2.0.3",
     "pull-stream": "^3.6.14",
-    "secret-stack-decorators": "1.1.0",
+    "secret-stack-decorators": "git+ssh://gitlab.com/regular1/secret-stack-decorators",
     "ssb-conn-db": "~0.3.3",
     "ssb-conn-hub": "~0.2.7",
     "ssb-conn-query": "~0.4.6",

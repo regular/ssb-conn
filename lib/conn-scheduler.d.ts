@@ -14,7 +14,7 @@ export declare class ConnScheduler {
     private loadHops;
     private isCurrentlyDownloading;
     private weBlockThem;
-    private weShouldConnectToThem;
+    private weFollowThem;
     private maxWaitToConnect;
     private updateTheseConnections;
     private updateStagingNow;

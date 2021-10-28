@@ -3,6 +3,7 @@ export declare class Gossip {
     private readonly ssb;
     private readonly notify;
     private readonly conn;
+    private deprecationWarned;
     private latestWarning;
     constructor(ssb: any, cfg: any);
     private setupConnectionListeners;
@@ -10,13 +11,14 @@ export declare class Gossip {
     private onConnected;
     private onDisconnected;
     private idToAddr;
+    private deprecationWarning;
     peers: () => any;
     get: (addr: Peer | string) => any;
-    connect: (addr: string | Peer, cb: Callback<any>) => void;
-    disconnect: (addr: string | Peer, cb: any) => any;
+    connect: (addr: Peer | string, cb: Callback<any>) => void;
+    disconnect: (addr: Peer | string, cb: any) => any;
     changes: () => any;
-    add: (addr: string | Peer, source: "local" | "pub" | "manual" | "seed" | "friends" | "dht" | "bt" | "stored") => any;
-    remove: (addr: string | Peer) => void;
+    add: (addr: Peer | string, source: Peer['source']) => any;
+    remove: (addr: Peer | string) => void;
     ping: () => any;
     reconnect: () => void;
     enable: (type: string) => void;

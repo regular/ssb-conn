@@ -3,6 +3,7 @@ import ConnHub = require('ssb-conn-hub');
 import ConnStaging = require('ssb-conn-staging');
 import ConnQuery = require('ssb-conn-query');
 import { AddressData } from 'ssb-conn-db/lib/types';
+import { StagedData } from 'ssb-conn-staging/lib/types';
 import { Callback } from './types';
 export declare class CONN {
     private readonly ssb;
@@ -20,15 +21,10 @@ export declare class CONN {
     remember: (address: string, data?: any) => void;
     forget: (address: string) => void;
     dbPeers: () => Iterable<[string, AddressData]>;
-    connect: (address: string, b?: Record<string, any> | Callback<any> | null | undefined, c?: Callback<any> | undefined) => void;
+    connect: (address: string, b?: Record<string, any> | null | undefined | Callback<any>, c?: Callback<any> | undefined) => void;
     disconnect: (address: string, cb?: Callback<any> | undefined) => void;
     peers: () => any;
-    stage: (address: string, data?: Partial<Readonly<{
-        [misc: string]: any;
-        key?: string | undefined;
-        stagingBirth: number;
-        stagingUpdated: number;
-    }>>) => boolean;
+    stage: (address: string, data?: Partial<StagedData>) => boolean;
     unstage: (address: string) => boolean;
     stagedPeers: () => any;
     start: () => Promise<void>;
